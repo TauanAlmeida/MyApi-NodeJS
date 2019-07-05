@@ -18,7 +18,6 @@ module.exports = {
         const user = await User.findOne({ email })
         
         if (user){
-    
             return res.json({user})
         }
         return res.status(400).send({ error: "User not found"})
@@ -27,8 +26,7 @@ module.exports = {
     //GEMAIL
     async userMail(req, res){
         const { email } = req.body
-        console.log(email)
-       // console.log(`Params: ${req.params}\nReqBody: ${req.body}`)
+
          if (await User.findOne({ email })){
             return res.send(true)
         }
@@ -40,7 +38,6 @@ module.exports = {
         if (!passwordResetToken){
             return res.status(400).send({error: 'Token not found.'})
         }
-        console.log('Token: ' +passwordResetToken)
         const user = await User.findOne({ passwordResetToken })
         return res.send({user})
     },
@@ -161,8 +158,6 @@ module.exports = {
     async resetPassword(req, res){
         const { email, passwordResetToken, password } = req.body
         const token = passwordResetToken
-
-
 
         const salt = bcrypt.genSaltSync(10);
 
