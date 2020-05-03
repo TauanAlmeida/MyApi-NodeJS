@@ -3,7 +3,7 @@ const routes = express.Router()
 const User = require('./app/controllers/User')
 
 //Rotas CRUD em Usuários
-//routes.get('/users', User.index)
+routes.get('/users', User.index)
 routes.post('/register', User.store)
 //routes.get('/users/:id', User.show)
 //routes.put('/users/:id', User.update)
