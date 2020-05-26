@@ -2,7 +2,7 @@ const express = require('express')
 const requireDir = require('require-dir')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-
+const { errors } = require('celebrate')
 //iniciando o app
 const app = express();
 app.use(cors())
@@ -18,9 +18,11 @@ app.use(bodyParser.urlencoded({extended: false}))
 //Requerindo todas as models
 requireDir('./src/app/models')
 
-
 //Pegando rotas
 app.use('/', require('./src/routes'))
+
+//Erros da validação
+app.use(errors())
 
 //Validar token do usuário
 app.use('/validate', require('./src/app/controllers/authMiddleware'))

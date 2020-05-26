@@ -23,14 +23,13 @@ module.exports = {
         return res.status(400).send({ error: "User not found"})
     },
 
-    //GEMAIL
-    async userMail(req, res){
+    async userHasMail(req, res){
         const { email } = req.body
-
+        if(!email) return res.status(404).json({error: 'Request body not found'})
          if (await User.findOne({ email })){
             return res.send(true)
         }
-        return res.send(false) 
+        return res.status(404).send({error: 'Email not found'}) 
     },
 
     async getUserByToken(req, res){
@@ -60,7 +59,7 @@ module.exports = {
     
         try {
             if (await User.findOne({ email })){
-                return res.status(400).send({ error: 'User already exists'})
+                return res.status(400).send({ error: 'E-mail already exists'})
             }
 
             req.body.password = await bcrypt.hashSync(req.body.password, salt)
@@ -84,9 +83,12 @@ module.exports = {
     },
 
     async destroy(req, res){
-        const user = await User.findById(req.params.id)
-        await User.findByIdAndRemove(req.params.id)
-        return res.json('user deleted')
+        try {
+            await User.findByIdAndRemove(req.params.id)
+            return res.status(200).send({success: 'User deleted'})
+        } catch (error) {
+            return res.status(400).send({ error: error})
+        }
     },
 
     async authenticate(req, res){
@@ -94,7 +96,6 @@ module.exports = {
         try {
             const user = await User.findOne({ email }).select('+password')
              
-    
             if(!user){
                 return res.status(400).send({ error: 'User not found'})
             }
@@ -148,7 +149,7 @@ module.exports = {
                 if (err){
                     res.status(400).send({error: 'cannot send forgot password in email'})
                 }
-                return res.send()
+                return res.send({success: 'Email de recuperação enviado'})
             })
         } catch (error) {
             res.status(400).send({ error: 'Erro on forgot password, try again'})
